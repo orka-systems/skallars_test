@@ -16,6 +16,19 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     scrollRestoration: true
+  },
+  async headers() {
+    return [
+      {
+        source: '/script/:path*',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript'
+          }
+        ]
+      }
+    ]
   }
 }
 
