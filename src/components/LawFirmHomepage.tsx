@@ -5,7 +5,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Check,
-  MapPin,
   Phone,
   Mail,
   Linkedin,
@@ -17,6 +16,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import dynamic from 'next/dynamic';
+import InteractiveMap from './InteractiveMap';
 
 // Dynamically import the Spirograph component with no SSR
 const Spirograph = dynamic(() => import('./Spirograph'), {
@@ -447,7 +447,7 @@ export default function LawFirmHomepage() {
             <h2 className="text-4xl font-bold mb-10 text-center text-[#210059]">
               Krajiny pôsobnosti
             </h2>
-            <p className="text-xl mb-8 text-center max-w-4xl mx-auto text-gray-600">
+            <p className="text-lg text-gray-600 mb-8">
               Naši advokáti sú členmi Slovenskej advokátskej komory a Českej
               advokátskej komory. Majú dlhoročné skúsenosti s poskytovaním
               právnych služieb na Slovensku aj v Českej republike.
@@ -455,47 +455,7 @@ export default function LawFirmHomepage() {
               podporujeme našich klientov pri riešení právnych záležitostí aj v
               Rakúsku.
             </p>
-            <div className="relative w-full h-96 bg-gray-800 rounded-lg overflow-hidden">
-              <img
-                src="/images/europe-map.jpg"
-                alt="Map of Europe"
-                className="w-full h-full object-cover rounded-lg"
-              />
-              {["Slovakia", "Czech Republic", "Austria"].map((country) => (
-                <div
-                  key={country}
-                  className="absolute cursor-pointer"
-                  style={{
-                    top:
-                      country === "Slovakia"
-                        ? "40%"
-                        : country === "Czech Republic"
-                        ? "30%"
-                        : "50%",
-                    left:
-                      country === "Slovakia"
-                        ? "60%"
-                        : country === "Czech Republic"
-                        ? "50%"
-                        : "40%",
-                  }}
-                  onMouseEnter={() => setHoveredCountry(country)}
-                  onMouseLeave={() => setHoveredCountry(null)}
-                >
-                  <MapPin className="w-8 h-8 text-[#210059]" />
-                  <p className="text-sm font-semibold mt-1 text-white">
-                    {country}
-                  </p>
-                  {hoveredCountry === country && (
-                    <div className="absolute z-10 bg-white text-[#210059] p-4 rounded-lg shadow-lg">
-                      <h4 className="font-bold">{officeInfo[country].city}</h4>
-                      <p>{officeInfo[country].address}</p>
-                      <p>{officeInfo[country].phone}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <InteractiveMap />
           </div>
         </section>
 
