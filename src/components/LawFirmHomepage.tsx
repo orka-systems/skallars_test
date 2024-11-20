@@ -1,6 +1,6 @@
 "use client";
 
-import { J } from "../../script.js";
+import { J } from "../lib/spirograph";
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import {
   ChevronLeft,
