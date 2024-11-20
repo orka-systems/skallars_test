@@ -1,6 +1,6 @@
 "use client";
 
-import { J } from "../lib/spirograph";
+import { J } from "../../script.js";
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import {
   ChevronLeft,
@@ -86,7 +86,9 @@ export default function LawFirmHomepage() {
   }, []);
 
   useLayoutEffect(() => {
-    J.initAll();
+    if (typeof window !== 'undefined') {
+      J.initAll();
+    }
   }, []);
 
   const scrollToSection = (sectionId: string) => {
