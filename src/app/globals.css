@@ -63,5 +63,5 @@ section:first-of-type {
 section:not(:first-of-type) {
   position: relative;
   z-index: 2;
-  background: var(--background);
+  background: #ffffff;
 }
