@@ -63,5 +63,5 @@ section:first-of-type {
 section:not(:first-of-type) {
   position: relative;
   z-index: 2;
-  background: #ffffff;
+  background: linear-gradient(to bottom, transparent 0%, transparent 20%, #ffffff 60%);
 }
