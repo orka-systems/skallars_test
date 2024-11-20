@@ -4,22 +4,42 @@ import { useEffect, useRef } from 'react';
 
 export default function Spirograph() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const scriptRef = useRef<HTMLScriptElement | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Load script directly
-    const script = document.createElement('script');
-    script.src = '/script.js';
-    script.onload = () => {
-      if (window.J && typeof window.J.initAll === 'function') {
-        window.J.initAll();
-      }
-    };
-    document.body.appendChild(script);
+    // Create script element if it doesn't exist
+    if (!scriptRef.current) {
+      scriptRef.current = document.createElement('script');
+      scriptRef.current.src = '/script.js';
+      scriptRef.current.async = true;
+      
+      // Initialize spirograph when script loads
+      scriptRef.current.onload = () => {
+        if (window.J && typeof window.J.initAll === 'function') {
+          try {
+            window.J.initAll();
+          } catch (error) {
+            console.error('Error initializing spirograph:', error);
+          }
+        }
+      };
 
+      // Handle script load errors
+      scriptRef.current.onerror = (error) => {
+        console.error('Error loading spirograph script:', error);
+      };
+
+      document.body.appendChild(scriptRef.current);
+    }
+
+    // Cleanup function
     return () => {
-      document.body.removeChild(script);
+      if (scriptRef.current && document.body.contains(scriptRef.current)) {
+        document.body.removeChild(scriptRef.current);
+        scriptRef.current = null;
+      }
     };
   }, []);
 

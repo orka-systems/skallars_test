@@ -1,6 +1,5 @@
 "use client";
 
-import { J } from "../../script.js";
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import {
   ChevronLeft,
