@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 declare global {
   interface Window {
@@ -13,46 +13,73 @@ declare global {
 
 export default function Spirograph() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState<string | null>(null);
+  const scriptRef = useRef<HTMLScriptElement | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Initialize spirograph when component mounts
-    const initSpirograph = () => {
-      if (window.J && typeof window.J.initAll === 'function') {
-        try {
+    const loadScript = async () => {
+      try {
+        // If script is already loaded and initialized
+        if (window.J && typeof window.J.initAll === 'function') {
           window.J.initAll();
-        } catch (error) {
-          console.error('Error initializing spirograph:', error);
+          return;
         }
+
+        // If script element already exists but not loaded
+        if (scriptRef.current) {
+          document.body.removeChild(scriptRef.current);
+        }
+
+        // Create and load script
+        const script = document.createElement('script');
+        script.src = '/script.js';
+        script.async = true;
+        
+        const loadPromise = new Promise((resolve, reject) => {
+          script.onload = resolve;
+          script.onerror = reject;
+        });
+
+        scriptRef.current = script;
+        document.body.appendChild(script);
+
+        await loadPromise;
+
+        // Wait a small delay to ensure script is fully initialized
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        if (!window.J || typeof window.J.initAll !== 'function') {
+          throw new Error('Spirograph script failed to initialize properly');
+        }
+
+        window.J.initAll();
+        setError(null);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load spirograph';
+        console.error('Spirograph initialization error:', err);
+        setError(errorMessage);
       }
     };
 
-    // Check if script is already loaded
-    if (window.J) {
-      initSpirograph();
-    } else {
-      // Load script if not already loaded
-      const script = document.createElement('script');
-      script.src = '/script.js';
-      script.async = true;
-      script.onload = initSpirograph;
-      script.onerror = (error) => {
-        console.error('Error loading spirograph script:', error);
-      };
-      document.body.appendChild(script);
-    }
+    loadScript();
 
     // Cleanup function
     return () => {
-      const scripts = document.querySelectorAll('script[src="/script.js"]');
-      scripts.forEach(script => {
-        if (script.parentNode) {
-          script.parentNode.removeChild(script);
-        }
-      });
+      if (scriptRef.current && scriptRef.current.parentNode) {
+        scriptRef.current.parentNode.removeChild(scriptRef.current);
+      }
     };
   }, []);
+
+  if (error) {
+    return (
+      <div className="p-4 text-red-500 bg-red-100 rounded">
+        Error loading spirograph: {error}
+      </div>
+    );
+  }
 
   return (
     <div 
