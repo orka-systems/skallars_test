@@ -1,133 +1,153 @@
 "use client";
 
-import React, { useState } from 'react';
-import { MapPin } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  Marker,
+  ZoomableGroup
+} from "react-simple-maps";
 
 interface Office {
   city: string;
   address: string;
   phone: string;
-  coordinates: {
-    x: number;
-    y: number;
-  };
+  coordinates: [number, number];
 }
 
-interface CountryInfo {
-  name: string;
-  path: string;
-  offices: Office[];
+interface CountryOffices {
+  [key: string]: Office[];
 }
 
-const countries: CountryInfo[] = [
-  {
-    name: "Slovakia",
-    path: "M 320 200 L 340 190 L 360 195 L 365 210 L 355 220 L 340 225 L 320 220 L 315 210 Z",
-    offices: [
-      {
-        city: "Bratislava",
-        address: "Mostová 2, 811 02 Bratislava",
-        phone: "+421 2 5443 5941",
-        coordinates: { x: 325, y: 215 }
-      },
-      {
-        city: "Košice",
-        address: "Hlavná 87, 040 01 Košice",
-        phone: "+421 55 729 0711",
-        coordinates: { x: 355, y: 205 }
-      }
-    ]
-  },
-  {
-    name: "Czech Republic",
-    path: "M 280 180 L 310 175 L 330 185 L 320 200 L 315 210 L 300 205 L 285 195 Z",
-    offices: [
-      {
-        city: "Praha",
-        address: "Vodičkova 710/31, 110 00 Praha",
-        phone: "+420 224 103 316",
-        coordinates: { x: 295, y: 190 }
-      }
-    ]
-  },
-  {
-    name: "Austria",
-    path: "M 290 220 L 315 210 L 320 220 L 315 235 L 295 240 L 280 235 L 275 225 Z",
-    offices: [
-      {
-        city: "Wien",
-        address: "Schottenring 12, 1010 Wien",
-        phone: "+43 1 513 8120",
-        coordinates: { x: 300, y: 225 }
-      }
-    ]
-  }
-];
+const offices: CountryOffices = {
+  SVK: [
+    {
+      city: "Bratislava",
+      address: "Staré Grunty 18, 841 04 Bratislava",
+      phone: "+421 2 5443 5941",
+      coordinates: [17.0688, 48.1690]
+    },
+    {
+      city: "Košice",
+      address: "Hlavná 87, 040 01 Košice",
+      phone: "+421 55 729 0711",
+      coordinates: [21.2611, 48.7164]
+    }
+  ],
+  CZE: [
+    {
+      city: "Praha",
+      address: "Bozděchova 7, 150 00 Praha 5",
+      phone: "+420 224 103 316",
+      coordinates: [14.3989, 50.0713]
+    }
+  ],
+  AUT: [
+    {
+      city: "Wien",
+      address: "Schottenring 12, 1010 Wien",
+      phone: "+43 1 513 8120",
+      coordinates: [16.3738, 48.2082]
+    }
+  ]
+};
+
+const highlightedCountries = ["SVK", "CZE", "AUT"];
 
 export default function InteractiveMap() {
-  const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [hoveredOffice, setHoveredOffice] = useState<Office | null>(null);
+  const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
 
   return (
-    <div className="relative w-full h-96 bg-gray-100 rounded-lg overflow-hidden">
-      <svg
-        viewBox="250 150 150 120"
-        className="w-full h-full"
-        style={{ background: '#f8fafc' }}
+    <div className="relative w-full h-[500px] bg-gray-50 rounded-lg overflow-hidden">
+      <ComposableMap
+        projection="geoMercator"
+        projectionConfig={{
+          center: [16.5, 48.7],
+          scale: 4000
+        }}
       >
-        {countries.map((country) => (
-          <path
-            key={country.name}
-            d={country.path}
-            fill={hoveredCountry === country.name ? '#210059' : '#e2e8f0'}
-            stroke="#334155"
-            strokeWidth="1"
-            onMouseEnter={() => setHoveredCountry(country.name)}
-            onMouseLeave={() => setHoveredCountry(null)}
-            className="transition-colors duration-300 cursor-pointer"
-          />
-        ))}
-        
-        {countries.map((country) => 
-          country.offices.map((office, index) => (
-            <g
-              key={`${country.name}-${office.city}`}
-              transform={`translate(${office.coordinates.x}, ${office.coordinates.y})`}
-              className="cursor-pointer"
-              onMouseEnter={() => setHoveredOffice(office)}
-              onMouseLeave={() => setHoveredOffice(null)}
-            >
-              <circle
-                r="3"
-                fill={hoveredOffice === office ? '#210059' : '#4a5568'}
-                className="transition-colors duration-300"
-              />
-              <text
-                x="5"
-                y="2"
-                fontSize="8"
-                fill="#1a202c"
-                className="font-medium"
+        <ZoomableGroup>
+          <Geographies geography="/europe.json">
+            {({ geographies }) =>
+              geographies.map((geo) => {
+                const isHighlighted = highlightedCountries.includes(geo.properties.ISO_A3);
+                const isHovered = hoveredCountry === geo.properties.ISO_A3;
+                
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    onMouseEnter={() => {
+                      if (isHighlighted) {
+                        setHoveredCountry(geo.properties.ISO_A3);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredCountry(null);
+                    }}
+                    style={{
+                      default: {
+                        fill: isHighlighted
+                          ? "#e2e8f0"
+                          : "#f1f5f9",
+                        stroke: "#94a3b8",
+                        strokeWidth: 0.5,
+                        outline: "none",
+                      },
+                      hover: {
+                        fill: isHighlighted ? "#210059" : "#f1f5f9",
+                        stroke: "#94a3b8",
+                        strokeWidth: 0.5,
+                        outline: "none",
+                      },
+                      pressed: {
+                        fill: "#210059",
+                        stroke: "#94a3b8",
+                        strokeWidth: 0.5,
+                        outline: "none",
+                      },
+                    }}
+                  />
+                );
+              })
+            }
+          </Geographies>
+
+          {Object.entries(offices).map(([countryCode, countryOffices]) =>
+            countryOffices.map((office, index) => (
+              <Marker
+                key={`${countryCode}-${index}`}
+                coordinates={office.coordinates}
+                onMouseEnter={() => setHoveredOffice(office)}
+                onMouseLeave={() => setHoveredOffice(null)}
               >
-                {office.city}
-              </text>
-            </g>
-          ))
-        )}
-      </svg>
+                <circle
+                  r={4}
+                  fill={hoveredOffice === office ? "#210059" : "#475569"}
+                  stroke="#fff"
+                  strokeWidth={2}
+                  className="cursor-pointer transition-colors duration-300"
+                />
+              </Marker>
+            ))
+          )}
+        </ZoomableGroup>
+      </ComposableMap>
 
       {hoveredOffice && (
         <div
           className="absolute z-10 bg-white text-[#210059] p-4 rounded-lg shadow-lg"
           style={{
-            top: `${(hoveredOffice.coordinates.y - 150) * 100 / 120}%`,
-            left: `${(hoveredOffice.coordinates.x - 250) * 100 / 150}%`,
-            transform: 'translate(-50%, -120%)'
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)"
           }}
         >
-          <h4 className="font-bold">{hoveredOffice.city}</h4>
-          <p>{hoveredOffice.address}</p>
-          <p>{hoveredOffice.phone}</p>
+          <h4 className="font-bold text-lg">{hoveredOffice.city}</h4>
+          <p className="text-gray-600">{hoveredOffice.address}</p>
+          <p className="text-gray-600">{hoveredOffice.phone}</p>
         </div>
       )}
     </div>
