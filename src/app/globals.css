@@ -57,11 +57,13 @@ section:first-of-type {
   position: relative;
   z-index: 1;
   background: transparent;
+  margin-bottom: -1px; /* Remove any gap between sections */
 }
 
 /* Other sections should be fully opaque */
 section:not(:first-of-type) {
   position: relative;
   z-index: 2;
-  background: linear-gradient(to bottom, transparent 0%, transparent 20%, #ffffff 60%);
+  background: linear-gradient(to bottom, transparent 0%, transparent 30%, #ffffff 70%);
+  padding-top: 4rem; /* Add padding to prevent content from being too close to the top */
 }
