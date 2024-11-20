@@ -21,19 +21,23 @@ body {
 }
 
 .spirograph {
-  height: 100%;
-  left: 0;
   position: absolute;
   top: 0;
+  left: 0;
   width: 100%;
-  z-index: 11;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
 }
+
 .spirograph__canvas {
   height: 100%;
   max-width: 100%;
   opacity: 0.75;
   width: 100%;
+  z-index: -1;
 }
+
 @media (max-width: 760px) {
   .spirograph__canvas {
     opacity: 0.88;
