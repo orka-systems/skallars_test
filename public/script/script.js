@@ -1,16 +1,16 @@
 // Make class available globally
 (function() {
   class J {
-    constructor(e) {
-      let { container: t, type: i } = e;
-      this.container = t;
+    constructor(container, options = {}) {
+      this.container = container;
       this.params = {
         baseSize: 92,
         objectsCount: 15,
         duplicateFactor: 0.4,
         initRotate: { x: 0.1, y: 0.1, z: 0.8 },
         autoRotateNonAxis: true,
-        objectsCountMobile: 11
+        objectsCountMobile: 11,
+        ...options
       };
       this.gradientAngle = Math.random() * Math.PI * 2;
       this.isRendering = false;
@@ -21,8 +21,10 @@
     init() {
       if (!this.container) return;
       
-      const canvas = document.createElement('canvas');
-      this.container.appendChild(canvas);
+      const canvas = this.container.querySelector('[data-spirograph-canvas]') || document.createElement('canvas');
+      if (!canvas.parentNode) {
+        this.container.appendChild(canvas);
+      }
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
       
@@ -52,40 +54,56 @@
       this.render();
     }
 
-    stop() {
-      this.isRendering = false;
-    }
-
     render() {
       if (!this.isRendering) return;
+
+      const time = new Date() / 1000 - this.initTime;
       
+      // Clear canvas
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       
       // Draw spirograph
-      this.ctx.strokeStyle = '#000';
-      this.ctx.beginPath();
+      const count = window.innerWidth < 768 ? this.params.objectsCountMobile : this.params.objectsCount;
+      const size = Math.min(this.canvas.width, this.canvas.height) * 0.4;
       
-      const time = new Date() / 1000 - this.initTime;
-      const scale = Math.min(this.canvas.width, this.canvas.height) * 0.4;
-      
-      for (let i = 0; i < 360; i++) {
-        const angle = (i * Math.PI) / 180;
-        const x = this.centerX + Math.cos(angle * 3 + time) * Math.cos(angle) * scale;
-        const y = this.centerY + Math.cos(angle * 3 + time) * Math.sin(angle) * scale;
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2;
+        const x = this.centerX + Math.cos(angle + time * 0.5) * size;
+        const y = this.centerY + Math.sin(angle + time * 0.5) * size;
         
-        if (i === 0) {
-          this.ctx.moveTo(x, y);
-        } else {
-          this.ctx.lineTo(x, y);
-        }
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, size * this.params.duplicateFactor, 0, Math.PI * 2);
+        this.ctx.fillStyle = `hsl(${(angle + time) * 30}, 70%, 60%)`;
+        this.ctx.fill();
       }
-      
-      this.ctx.stroke();
       
       requestAnimationFrame(() => this.render());
     }
+
+    stop() {
+      this.isRendering = false;
+    }
   }
 
-  // Make J available globally
+  // Make J available globally with initAll function
   window.J = J;
+  window.J.initAll = function() {
+    const containers = document.querySelectorAll('[data-spirograph]');
+    containers.forEach(container => {
+      try {
+        let options = {};
+        const optionsAttr = container.getAttribute('data-spirograph-options');
+        if (optionsAttr) {
+          try {
+            options = JSON.parse(optionsAttr);
+          } catch (e) {
+            console.warn('Invalid spirograph options:', e);
+          }
+        }
+        new J(container, options);
+      } catch (e) {
+        console.error('Failed to initialize spirograph:', e);
+      }
+    });
+  };
 })();
