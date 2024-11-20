@@ -1,16 +1,16 @@
 // Make class available globally
 (function() {
   class J {
-    constructor(container, options = {}) {
-      this.container = container;
+    constructor(e) {
+      let { container: t, type: i } = e;
+      this.container = t;
       this.params = {
         baseSize: 92,
         objectsCount: 15,
         duplicateFactor: 0.4,
         initRotate: { x: 0.1, y: 0.1, z: 0.8 },
         autoRotateNonAxis: true,
-        objectsCountMobile: 11,
-        ...options
+        objectsCountMobile: 11
       };
       this.gradientAngle = Math.random() * Math.PI * 2;
       this.isRendering = false;
@@ -21,10 +21,8 @@
     init() {
       if (!this.container) return;
       
-      const canvas = this.container.querySelector('[data-spirograph-canvas]') || document.createElement('canvas');
-      if (!canvas.parentNode) {
-        this.container.appendChild(canvas);
-      }
+      const canvas = document.createElement('canvas');
+      this.container.appendChild(canvas);
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
       
@@ -100,7 +98,7 @@
             console.warn('Invalid spirograph options:', e);
           }
         }
-        new J(container, options);
+        new J({ container, options });
       } catch (e) {
         console.error('Failed to initialize spirograph:', e);
       }
