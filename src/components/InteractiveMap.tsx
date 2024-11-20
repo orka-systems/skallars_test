@@ -6,6 +6,7 @@ import {
   Geographies,
   Geography,
   Marker,
+  Annotation,
   ZoomableGroup
 } from "react-simple-maps";
 
@@ -55,20 +56,31 @@ const offices: CountryOffices = {
 
 const highlightedCountries = ["SVK", "CZE", "AUT"];
 
+const majorCities = [
+  { name: "Praha", coordinates: [14.4378, 50.0755] },
+  { name: "Bratislava", coordinates: [17.1077, 48.1486] },
+  { name: "Wien", coordinates: [16.3738, 48.2082] }
+];
+
 export default function InteractiveMap() {
   const [hoveredOffice, setHoveredOffice] = useState<Office | null>(null);
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
 
   return (
-    <div className="relative w-full h-[500px] bg-gray-50 rounded-lg overflow-hidden">
+    <div className="relative w-full h-[500px] bg-gray-50 rounded-lg overflow-hidden" onWheel={(e) => e.stopPropagation()}>
       <ComposableMap
         projection="geoMercator"
         projectionConfig={{
-          center: [16.5, 48.7],
-          scale: 4000
+          center: [16, 49],
+          scale: 2500
         }}
       >
-        <ZoomableGroup>
+        <ZoomableGroup
+          zoom={1}
+          maxZoom={1}
+          minZoom={1}
+          center={[16, 49]}
+        >
           <Geographies geography="/europe.json">
             {({ geographies }) =>
               geographies.map((geo) => {
@@ -90,17 +102,19 @@ export default function InteractiveMap() {
                     style={{
                       default: {
                         fill: isHighlighted
-                          ? "#e2e8f0"
+                          ? "#210059"
                           : "#f1f5f9",
                         stroke: "#94a3b8",
                         strokeWidth: 0.5,
                         outline: "none",
+                        opacity: isHighlighted ? 0.8 : 1
                       },
                       hover: {
                         fill: isHighlighted ? "#210059" : "#f1f5f9",
                         stroke: "#94a3b8",
                         strokeWidth: 0.5,
                         outline: "none",
+                        opacity: isHighlighted ? 1 : 1
                       },
                       pressed: {
                         fill: "#210059",
@@ -115,6 +129,32 @@ export default function InteractiveMap() {
             }
           </Geographies>
 
+          {/* Major city labels */}
+          {majorCities.map(({ name, coordinates }) => (
+            <Annotation
+              key={name}
+              subject={coordinates}
+              dx={0}
+              dy={-10}
+              connectorProps={{
+                stroke: "#210059",
+                strokeWidth: 1,
+                strokeLinecap: "round"
+              }}
+            >
+              <text
+                x={4}
+                textAnchor="middle"
+                alignmentBaseline="middle"
+                fill="#210059"
+                className="text-[10px] font-semibold"
+              >
+                {name}
+              </text>
+            </Annotation>
+          ))}
+
+          {/* Office markers */}
           {Object.entries(offices).map(([countryCode, countryOffices]) =>
             countryOffices.map((office, index) => (
               <Marker
