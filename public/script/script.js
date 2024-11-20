@@ -1,3 +1,4 @@
+(function() {
 class e {
   constructor(e) {
     if (("string" == typeof e && (e = document.querySelector(e)), e))
@@ -831,7 +832,7 @@ let U = {
           e.target.dispatchEvent(new CustomEvent("exit-view"));
     });
   });
-export class J {
+class J {
   constructor(e) {
     let { container: t, type: i } = e;
     (this.container = t),
@@ -6148,3 +6149,5 @@ function bt() {
       })("[data-slider]"),
       document.documentElement.classList.add("__loaded");
   });
+window.J = J;
+})();
