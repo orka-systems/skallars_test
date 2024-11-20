@@ -1,20 +1,26 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
-
-// Dynamically import the spirograph class with no SSR
-const J = dynamic(() => import('../../script.js').then(mod => mod.J), {
-  ssr: false
-});
 
 export default function Spirograph() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containerRef.current && typeof window !== 'undefined') {
-      J.initAll();
-    }
+    if (typeof window === 'undefined') return;
+
+    const initSpirograph = async () => {
+      try {
+        // Dynamic import using native JavaScript
+        const module = await import('../../script.js');
+        if (module.J && typeof module.J.initAll === 'function') {
+          module.J.initAll();
+        }
+      } catch (error) {
+        console.error('Error initializing spirograph:', error);
+      }
+    };
+
+    initSpirograph();
   }, []);
 
   return (
