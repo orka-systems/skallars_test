@@ -308,7 +308,7 @@ export default function LawFirmHomepage() {
       <main>
         <section
           id="home"
-          className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white relative overflow-hidden pt-20"
+          className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20"
         >
           <div className="container mx-auto px-4 py-20 relative z-10">
             <h1 className="text-7xl font-bold mb-6 text-[#210059]">
@@ -324,7 +324,6 @@ export default function LawFirmHomepage() {
               .
             </p>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white pointer-events-none"></div>
         </section>
 
         <section className="py-20 bg-gradient-to-b from-white to-gray-100">
