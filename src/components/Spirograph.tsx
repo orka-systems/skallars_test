@@ -8,19 +8,19 @@ export default function Spirograph() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const initSpirograph = async () => {
-      try {
-        // Dynamic import using native JavaScript
-        const module = await import('../../script.js');
-        if (module.J && typeof module.J.initAll === 'function') {
-          module.J.initAll();
-        }
-      } catch (error) {
-        console.error('Error initializing spirograph:', error);
+    // Load script directly
+    const script = document.createElement('script');
+    script.src = '/script.js';
+    script.onload = () => {
+      if (window.J && typeof window.J.initAll === 'function') {
+        window.J.initAll();
       }
     };
+    document.body.appendChild(script);
 
-    initSpirograph();
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
   return (
