@@ -3,7 +3,7 @@ declare global {
     J: {
       initAll: () => void;
       [key: string]: any;
-    };
+    }
   }
 }
 
