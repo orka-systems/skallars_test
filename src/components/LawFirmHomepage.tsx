@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -18,6 +18,7 @@ import {
 } from "framer-motion";
 import dynamic from 'next/dynamic';
 
+// Dynamically import the Spirograph component with no SSR
 const Spirograph = dynamic(() => import('./Spirograph'), {
   ssr: false
 });
@@ -29,7 +30,6 @@ export default function LawFirmHomepage() {
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [currentClientIndex, setCurrentClientIndex] = useState(0);
   const [activeSection, setActiveSection] = useState("");
-
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
@@ -80,12 +80,6 @@ export default function LawFirmHomepage() {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
-
-  useLayoutEffect(() => {
-    if (typeof window !== 'undefined') {
-      J.initAll();
-    }
   }, []);
 
   const scrollToSection = (sectionId: string) => {

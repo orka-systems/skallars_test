@@ -1,6 +1,10 @@
-interface Window {
-  J: {
-    initAll: () => void;
-    [key: string]: any;
-  };
+declare global {
+  interface Window {
+    J: {
+      initAll: () => void;
+      [key: string]: any;
+    };
+  }
 }
+
+export {};
