@@ -2,44 +2,54 @@
 
 import { useEffect, useRef } from 'react';
 
+declare global {
+  interface Window {
+    J: {
+      initAll: () => void;
+    }
+  }
+}
+
 export default function Spirograph() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const scriptRef = useRef<HTMLScriptElement | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Create script element if it doesn't exist
-    if (!scriptRef.current) {
-      scriptRef.current = document.createElement('script');
-      scriptRef.current.src = '/script.js';
-      scriptRef.current.async = true;
-      
-      // Initialize spirograph when script loads
-      scriptRef.current.onload = () => {
-        if (window.J && typeof window.J.initAll === 'function') {
-          try {
-            window.J.initAll();
-          } catch (error) {
-            console.error('Error initializing spirograph:', error);
-          }
+    // Initialize spirograph when component mounts
+    const initSpirograph = () => {
+      if (window.J && typeof window.J.initAll === 'function') {
+        try {
+          window.J.initAll();
+        } catch (error) {
+          console.error('Error initializing spirograph:', error);
         }
-      };
+      }
+    };
 
-      // Handle script load errors
-      scriptRef.current.onerror = (error) => {
+    // Check if script is already loaded
+    if (window.J) {
+      initSpirograph();
+    } else {
+      // Load script if not already loaded
+      const script = document.createElement('script');
+      script.src = '/script.js';
+      script.async = true;
+      script.onload = initSpirograph;
+      script.onerror = (error) => {
         console.error('Error loading spirograph script:', error);
       };
-
-      document.body.appendChild(scriptRef.current);
+      document.body.appendChild(script);
     }
 
     // Cleanup function
     return () => {
-      if (scriptRef.current && document.body.contains(scriptRef.current)) {
-        document.body.removeChild(scriptRef.current);
-        scriptRef.current = null;
-      }
+      const scripts = document.querySelectorAll('script[src="/script.js"]');
+      scripts.forEach(script => {
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      });
     };
   }, []);
 
