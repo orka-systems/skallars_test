@@ -34,10 +34,10 @@ export default function LawFirmHomepage() {
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   const images = [
-    "/placeholder.svg?height=400&width=600&text=Legal+Consultation",
-    "/placeholder.svg?height=400&width=600&text=Contract+Review",
-    "/placeholder.svg?height=400&width=600&text=Court+Representation",
-    "/placeholder.svg?height=400&width=600&text=Corporate+Law",
+    "/images/legal-consultation.jpg",
+    "/images/contract-review.jpg",
+    "/images/court-representation.jpg",
+    "/images/corporate-law.jpg",
   ];
 
   useEffect(() => {
@@ -457,9 +457,9 @@ export default function LawFirmHomepage() {
             </p>
             <div className="relative w-full h-96 bg-gray-800 rounded-lg overflow-hidden">
               <img
-                src="/placeholder.svg?height=384&width=768&text=Map+of+Europe"
+                src="/images/europe-map.jpg"
                 alt="Map of Europe"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-lg"
               />
               {["Slovakia", "Czech Republic", "Austria"].map((country) => (
                 <div
@@ -546,7 +546,7 @@ export default function LawFirmHomepage() {
                   excerpt:
                     'Tento rozhovor sa bude odohrávať v obklopení dizajnu, množstva „koní" a skvelej kávy. Majiteľovi pd drive clubu sa podarilo vytvoriť miesto, ktoré si zamilujú všetci milovníci áut a',
                   image:
-                    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/legal-document-signing-Ue5Hy5Ue5Hy5Ue5Hy5Ue5Hy5Ue5Hy5.jpg",
+                    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
                 },
                 {
                   title:
@@ -554,14 +554,14 @@ export default function LawFirmHomepage() {
                   excerpt:
                     'Tento rozhovor sa bude odohrávať v obklopení dizajnu, množstva „koní" a skvelej kávy. Majiteľovi pd drive clubu sa podarilo vytvoriť miesto, ktoré si zamilujú všetci milovníci áut a',
                   image:
-                    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/business-lunch-meeting-zNXzNXzNXzNXzNXzNXzNX.jpg",
+                    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
                 },
                 {
                   title: "Zdanenie osobného dôchodkového produktu",
                   excerpt:
                     'Tento rozhovor sa bude odohrávať v obklopení dizajnu, množstva „koní" a skvelej kávy. Majiteľovi pd drive clubu sa podarilo vytvoriť miesto, ktoré si zamilujú všetci milovníci áut a',
                   image:
-                    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/retirement-planning-concept-QwEQwEQwEQwEQwEQwEQwE.jpg",
+                    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
                 },
               ].map((post, index) => (
                 <div
