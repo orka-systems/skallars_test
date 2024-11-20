@@ -124,13 +124,12 @@ echo -e "${GREEN}✅ Release v$NEW_VERSION created successfully${NC}"
 # Build the project
 echo -e "\n${BLUE}Building project...${NC}"
 rm -rf .next
-rm -rf out
 npm install --legacy-peer-deps
 npm run build
 
 # Deploy to Netlify
 echo -e "\n${BLUE}Deploying to Netlify...${NC}"
-netlify deploy --prod --dir=out
+netlify deploy --prod --dir=.next
 
 echo -e "\n${GREEN}✅ Process Complete!${NC}"
 echo -e "✓ Version updated to v$NEW_VERSION"
