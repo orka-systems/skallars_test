@@ -1,4 +1,6 @@
-module.exports = {
-  target: 'serverless',
-  //... other configurations ...
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'standalone'
 }
+
+module.exports = nextConfig
