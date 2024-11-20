@@ -1,6 +1,6 @@
 {
   "name": "skallars-spirograph",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "dev": "next",
@@ -8,9 +8,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "framer-motion": "^11.11.17",
+    "lucide-react": "^0.460.0",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "tailwindcss": "^3.4.15"
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^5.8.1",
