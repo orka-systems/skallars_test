@@ -1,0 +1,33 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Test Spirograph</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+	<div class="spirograph"
+	data-spirograph="tetra"
+	data-spirograph-options='{
+	   "autoRotateNonAxis": true,
+	   "objectsCount": 12,
+	   "objectsCountMobile": 11,
+	   "duplicateFactor": 0.58,
+	   "initRotate": { "x": 0.1, "y": 0.1, "z": 0.8 }
+	}'
+>
+   <canvas class="spirograph__canvas"
+		   data-spirograph-canvas
+		   data-parallax
+		   data-parallax-speed="30"
+   ></canvas>
+</div>
+
+	<h1>SKALLARS - advokátkska kancelária</h1>
+	<p>...</p>
+
+	<script src="script.js"></script>
+	<script>J.initAll();</script>
+
+</body>
