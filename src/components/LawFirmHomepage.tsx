@@ -17,6 +17,11 @@ import {
   useTransform,
   AnimatePresence,
 } from "framer-motion";
+import dynamic from 'next/dynamic';
+
+const Spirograph = dynamic(() => import('./Spirograph'), {
+  ssr: false
+});
 
 export default function LawFirmHomepage() {
   const servicesRef = useRef<HTMLDivElement>(null);
@@ -74,13 +79,6 @@ export default function LawFirmHomepage() {
         (prevIndex) => (prevIndex + 1) % (clients.length - 2)
       );
     }, 3000);
-
-    // render spirograpgh
-    // spirograph.initAll();
-    //  spirograph.t.initAll();
-    // J.initAll();
-
-    // console.log("test", J);
 
     return () => clearInterval(interval);
   }, []);
@@ -239,6 +237,7 @@ export default function LawFirmHomepage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Spirograph />
       <header className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <img
@@ -333,24 +332,6 @@ export default function LawFirmHomepage() {
             </p>
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white pointer-events-none"></div>
-          <div
-            className="spirograph"
-            data-spirograph="tetra"
-            data-spirograph-options='{
-            "autoRotateNonAxis": true,
-            "objectsCount": 12,
-            "objectsCountMobile": 11,
-            "duplicateFactor": 0.58,
-            "initRotate": { "x": 0.1, "y": 0.1, "z": 0.8 }
-            }'
-          >
-            <canvas
-              className="spirograph__canvas"
-              data-spirograph-canvas
-              data-parallax
-              data-parallax-speed="30"
-            ></canvas>
-          </div>
         </section>
 
         <section className="py-20 bg-gradient-to-b from-white to-gray-100">
