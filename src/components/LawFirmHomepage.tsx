@@ -1,12 +1,10 @@
 "use client";
 
-import { J } from "../../script.js";
-import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   ChevronLeft,
   ChevronRight,
   Check,
-  MapPin,
   Phone,
   Mail,
   Linkedin,
@@ -17,6 +15,13 @@ import {
   useTransform,
   AnimatePresence,
 } from "framer-motion";
+import dynamic from 'next/dynamic';
+import InteractiveMap from './InteractiveMap';
+
+// Dynamically import the Spirograph component with no SSR
+const Spirograph = dynamic(() => import('./Spirograph'), {
+  ssr: false
+});
 
 export default function LawFirmHomepage() {
   const servicesRef = useRef<HTMLDivElement>(null);
@@ -25,15 +30,14 @@ export default function LawFirmHomepage() {
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [currentClientIndex, setCurrentClientIndex] = useState(0);
   const [activeSection, setActiveSection] = useState("");
-
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   const images = [
-    "/placeholder.svg?height=400&width=600&text=Legal+Consultation",
-    "/placeholder.svg?height=400&width=600&text=Contract+Review",
-    "/placeholder.svg?height=400&width=600&text=Court+Representation",
-    "/placeholder.svg?height=400&width=600&text=Corporate+Law",
+    "/images/legal-consultation.jpg",
+    "/images/contract-review.jpg",
+    "/images/court-representation.jpg",
+    "/images/corporate-law.jpg",
   ];
 
   useEffect(() => {
@@ -75,18 +79,7 @@ export default function LawFirmHomepage() {
       );
     }, 3000);
 
-    // render spirograpgh
-    // spirograph.initAll();
-    //  spirograph.t.initAll();
-    // J.initAll();
-
-    // console.log("test", J);
-
     return () => clearInterval(interval);
-  }, []);
-
-  useLayoutEffect(() => {
-    J.initAll();
   }, []);
 
   const scrollToSection = (sectionId: string) => {
@@ -237,6 +230,7 @@ export default function LawFirmHomepage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Spirograph />
       <header className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg">
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <img
@@ -314,7 +308,7 @@ export default function LawFirmHomepage() {
       <main>
         <section
           id="home"
-          className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white relative overflow-hidden pt-20"
+          className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20"
         >
           <div className="container mx-auto px-4 py-20 relative z-10">
             <h1 className="text-7xl font-bold mb-6 text-[#210059]">
@@ -329,25 +323,6 @@ export default function LawFirmHomepage() {
               </span>
               .
             </p>
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white pointer-events-none"></div>
-          <div
-            className="spirograph"
-            data-spirograph="tetra"
-            data-spirograph-options='{
-            "autoRotateNonAxis": true,
-            "objectsCount": 12,
-            "objectsCountMobile": 11,
-            "duplicateFactor": 0.58,
-            "initRotate": { "x": 0.1, "y": 0.1, "z": 0.8 }
-            }'
-          >
-            <canvas
-              className="spirograph__canvas"
-              data-spirograph-canvas
-              data-parallax
-              data-parallax-speed="30"
-            ></canvas>
           </div>
         </section>
 
@@ -472,7 +447,7 @@ export default function LawFirmHomepage() {
             <h2 className="text-4xl font-bold mb-10 text-center text-[#210059]">
               Krajiny pôsobnosti
             </h2>
-            <p className="text-xl mb-8 text-center max-w-4xl mx-auto text-gray-600">
+            <p className="text-lg text-gray-600 mb-8">
               Naši advokáti sú členmi Slovenskej advokátskej komory a Českej
               advokátskej komory. Majú dlhoročné skúsenosti s poskytovaním
               právnych služieb na Slovensku aj v Českej republike.
@@ -480,47 +455,7 @@ export default function LawFirmHomepage() {
               podporujeme našich klientov pri riešení právnych záležitostí aj v
               Rakúsku.
             </p>
-            <div className="relative w-full h-96 bg-gray-800 rounded-lg overflow-hidden">
-              <img
-                src="/placeholder.svg?height=384&width=768&text=Map+of+Europe"
-                alt="Map of Europe"
-                className="w-full h-full object-cover"
-              />
-              {["Slovakia", "Czech Republic", "Austria"].map((country) => (
-                <div
-                  key={country}
-                  className="absolute cursor-pointer"
-                  style={{
-                    top:
-                      country === "Slovakia"
-                        ? "40%"
-                        : country === "Czech Republic"
-                        ? "30%"
-                        : "50%",
-                    left:
-                      country === "Slovakia"
-                        ? "60%"
-                        : country === "Czech Republic"
-                        ? "50%"
-                        : "40%",
-                  }}
-                  onMouseEnter={() => setHoveredCountry(country)}
-                  onMouseLeave={() => setHoveredCountry(null)}
-                >
-                  <MapPin className="w-8 h-8 text-[#210059]" />
-                  <p className="text-sm font-semibold mt-1 text-white">
-                    {country}
-                  </p>
-                  {hoveredCountry === country && (
-                    <div className="absolute z-10 bg-white text-[#210059] p-4 rounded-lg shadow-lg">
-                      <h4 className="font-bold">{officeInfo[country].city}</h4>
-                      <p>{officeInfo[country].address}</p>
-                      <p>{officeInfo[country].phone}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <InteractiveMap />
           </div>
         </section>
 
@@ -571,7 +506,7 @@ export default function LawFirmHomepage() {
                   excerpt:
                     'Tento rozhovor sa bude odohrávať v obklopení dizajnu, množstva „koní" a skvelej kávy. Majiteľovi pd drive clubu sa podarilo vytvoriť miesto, ktoré si zamilujú všetci milovníci áut a',
                   image:
-                    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/legal-document-signing-Ue5Hy5Ue5Hy5Ue5Hy5Ue5Hy5Ue5Hy5.jpg",
+                    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
                 },
                 {
                   title:
@@ -579,14 +514,14 @@ export default function LawFirmHomepage() {
                   excerpt:
                     'Tento rozhovor sa bude odohrávať v obklopení dizajnu, množstva „koní" a skvelej kávy. Majiteľovi pd drive clubu sa podarilo vytvoriť miesto, ktoré si zamilujú všetci milovníci áut a',
                   image:
-                    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/business-lunch-meeting-zNXzNXzNXzNXzNXzNXzNX.jpg",
+                    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
                 },
                 {
                   title: "Zdanenie osobného dôchodkového produktu",
                   excerpt:
                     'Tento rozhovor sa bude odohrávať v obklopení dizajnu, množstva „koní" a skvelej kávy. Majiteľovi pd drive clubu sa podarilo vytvoriť miesto, ktoré si zamilujú všetci milovníci áut a',
                   image:
-                    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/retirement-planning-concept-QwEQwEQwEQwEQwEQwEQwE.jpg",
+                    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
                 },
               ].map((post, index) => (
                 <div
