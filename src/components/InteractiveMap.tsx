@@ -21,6 +21,11 @@ interface CountryOffices {
   [key: string]: Office[];
 }
 
+interface City {
+  name: string;
+  coordinates: [number, number];
+}
+
 const offices: CountryOffices = {
   SVK: [
     {
@@ -56,10 +61,10 @@ const offices: CountryOffices = {
 
 const highlightedCountries = ["SVK", "CZE", "AUT"];
 
-const majorCities = [
-  { name: "Praha", coordinates: [14.4378, 50.0755] },
-  { name: "Bratislava", coordinates: [17.1077, 48.1486] },
-  { name: "Wien", coordinates: [16.3738, 48.2082] }
+const majorCities: City[] = [
+  { name: "Praha", coordinates: [14.3989, 50.0713] as [number, number] },
+  { name: "Bratislava", coordinates: [17.0688, 48.1690] as [number, number] },
+  { name: "Wien", coordinates: [16.3738, 48.2082] as [number, number] }
 ];
 
 export default function InteractiveMap() {
@@ -133,7 +138,7 @@ export default function InteractiveMap() {
           {majorCities.map(({ name, coordinates }) => (
             <Annotation
               key={name}
-              subject={coordinates}
+              subject={coordinates as [number, number]}
               dx={0}
               dy={-10}
               connectorProps={{
